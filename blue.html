@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Pill</title>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+    <style>
+        html { background: black; height: 100%; overflow: auto; }
+        body { margin: 0; padding: 50px; font-family: 'UnifrakturMaguntia', cursive; text-align: center; color: white; position: relative; z-index: 1; }
+        h1 { color: #F00; z-index: 2; position: relative; }
+        h2 { color: #F00; z-index: 2; position: relative; }
+        p, ul { color: #ccc; text-align: left; max-width: 600px; margin: 20px auto; z-index: 2; position: relative; }
+        .section { margin: 40px 0; z-index: 2; position: relative; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.8; } /* Lower opacity for canvas */
+    </style>
+</head>
+<body>
+    <canvas id="Matrix"></canvas>
+    <h1>Red Pill: Embrace the Truth</h1>
+    <div class="section">
+        <h2>My Experiences</h2>
+        <ul>
+            <li>Software Developer at Tech Corp (2023-Present): Built web applications.</li>
+            <li>Intern at CodeWorks (2022): Assisted in backend development.</li>
+        </ul>
+    </div>
+    <div class="section">
+        <h2>My Education</h2>
+        <ul>
+            <li>B.S. in Computer Science, University of Example (2019-2023)</li>
+            <li>Online Course in Web Development, Coursera (2021)</li>
+        </ul>
+    </div>
+    <div class="section">
+        <h2>My Projects</h2>
+        <ul>
+            <li>Matrix Portfolio Website: Built a personal site with a Matrix theme.</li>
+            <li>Task Manager App: Developed a task management tool using JavaScript.</li>
+        </ul>
+    </div>
+    <script>
+        const canvas = document.getElementById('Matrix');
+        const context = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const h = 'א‎ב‎ג‎ד‎ה‎ו‎ז‎ח‎ט‎י‎כ‎ך‎ל‎מ‎ם‎נ‎ן‎ס‎ע‎פ‎ף‎צ‎ץ‎ק‎ר‎ש‎ת';
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'AEILNOPRSTY';
+        const nums = '911';
+        const alphabet = katakana + latin + nums + h;
+        const fontSize = 10;
+        const columns = canvas.width / fontSize;
+        const rows = canvas.height / fontSize;
+        const rainDropsVert = [];
+        const rainDropsHorz = [];
+        for (let x = 0; x < columns; x++) {
+            rainDropsVert[x] = Math.random() * canvas.height / fontSize;
+        }
+        for (let y = 0; y < rows; y++) {
+            rainDropsHorz[y] = Math.random() * canvas.width / fontSize;
+        }
+        const draw = () => {
+            context.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.font = fontSize + 'px monospace';
+            // Vertical rain
+            context.fillStyle = 'rgba(255, 255, 255, ' + (Math.random() * 0.5 + 0.5) + ')';
+            for (let i = 0; i < rainDropsVert.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                context.save();
+                context.translate(i * fontSize, rainDropsVert[i] * fontSize);
+                context.rotate(Math.PI / 2);
+                context.fillText(text, 0, 0);
+                context.restore();
+                rainDropsVert[i] += 0.5 + Math.random() * 0.5;
+                if (rainDropsVert[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDropsVert[i] = 0;
+                }
+            }
+            // Horizontal rain
+            context.fillStyle = 'rgba(255, 255, 255, ' + (Math.random() * 0.5 + 0.5) + ')';
+            for (let i = 0; i < rainDropsHorz.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                context.fillText(text, rainDropsHorz[i] * fontSize, i * fontSize);
+                rainDropsHorz[i] += 0.5 + Math.random() * 0.5;
+                if (rainDropsHorz[i] * fontSize > canvas.width && Math.random() > 0.975) {
+                    rainDropsHorz[i] = 0;
+                }
+            }
+        };
+        setInterval(draw, 30);
+    </script>
+</body>
+</html>
