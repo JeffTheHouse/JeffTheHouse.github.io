@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Put your HTML text here<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,24 +9,45 @@
         html { background: black; height: 100%; overflow: hidden; }
         body { margin: 0; padding: 0; height: 100%; font-family: 'UnifrakturMaguntia', cursive; text-align: center; padding: 50px; color: white; position: relative; z-index: 1; }
         h1 { color: #0F0; }
-        p { color: #ccc; }
+        p.static-text { color: #0F0; font-size: 20px; margin: 20px 0; z-index: 2; position: relative; }
+        .button-container { display: flex; justify-content: center; gap: 20px; z-index: 2; position: relative; }
+        .button { 
+            background: #0F0; 
+            color: black; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 5px; 
+            font-family: 'UnifrakturMaguntia', cursive; 
+            font-size: 18px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-block; 
+        }
+        .button.blue { background: #00F; color: white; }
+        .button.red { background: #F00; color: white; }
+        .button:hover { opacity: 0.8; }
         canvas { position: absolute; top: 0; left: 0; z-index: 0; }
     </style>
 </head>
 <body>
     <canvas id="Matrix"></canvas>
-    <h1>Main Page</h1>
-    <p>Welcome to the main page of my website. Add your content here!</p>
+    <h1>Welcome</h1>
+    <p class="static-text">Choose wisely, there is no turning back.</p>
+    <div class="button-container">
+        <a href="blue.html" class="button blue">Blue</a>
+        <a href="red.html" class="button red">Red</a>
+    </div>
     <script>
         const canvas = document.getElementById('Matrix');
         const context = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         const h = 'א‎ב‎ג‎ד‎ה‎ו‎ז‎ח‎ט‎י‎כ‎ך‎ל‎מ‎ם‎נ‎ן‎ס‎ע‎פ‎ף‎צ‎ץ‎ק‎ר‎ש‎ת';
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
         const latin = 'AEILNOPRSTY';
-        const nums = '019';
-        const alphabet =  latin + nums + h;
-        const fontSize = 16;
+        const nums = '911';
+        const alphabet = katakana + latin + nums + h;
+        const fontSize = 10;
         const columns = canvas.width / fontSize;
         const rainDrops = [];
         for (let x = 0; x < columns; x++) {
