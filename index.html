@@ -42,12 +42,11 @@ Put your HTML text here<!DOCTYPE html>
         const context = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        const h = 'א‎ב‎ג‎ד‎ה‎ו‎ז‎ח‎ט‎י‎כ‎ך‎ל‎מ‎ם‎נ‎ן‎ס‎ע‎פ‎ף‎צ‎ץ‎ק‎ר‎ש‎ת';
         const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-        const latin = 'AEILNOPRSTY';
-        const nums = '911';
-        const alphabet = katakana + latin + nums + h;
-        const fontSize = 10;
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '123456789';
+        const alphabet = katakana + latin + nums;
+        const fontSize = 11;
         const columns = canvas.width / fontSize;
         const rainDrops = [];
         for (let x = 0; x < columns; x++) {
