@@ -3,40 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Red Pill</title>
+    <title>Blue Pill</title>
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
     <style>
         html { background: black; height: 100%; overflow: auto; }
         body { margin: 0; padding: 50px; font-family: 'UnifrakturMaguntia', cursive; text-align: center; color: white; position: relative; z-index: 1; }
-        h1 { color: #F00; z-index: 2; position: relative; }
-        h2 { color: #F00; z-index: 2; position: relative; }
-        p, ul { color: #ccc; text-align: left; max-width: 600px; margin: 20px auto; z-index: 2; position: relative; }
+        h1 { color: #00F; z-index: 2; position: relative; }
+        h2 { color: black; font-family: Arial, sans-serif; z-index: 2; position: relative; }
+        h3 { color: white; font-family: Arial, sans-serif; z-index: 5; position: relative; }
+        
+        p, ul { color: black; font-family: Arial, sans-serif; text-align: left; max-width: 600px; margin: 20px auto; z-index: 2; position: relative; }
         .section { margin: 40px 0; z-index: 2; position: relative; }
-        canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.8; } /* Lower opacity for canvas */
+        canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.8; }
+        <div class="typewriter">
+            <span id="typed-text"></span>
+            <span id="cursor">|</span>
+        </div>
     </style>
 </head>
 <body>
     <canvas id="Matrix"></canvas>
-    <h1>Red Pill: Embrace the Truth</h1>
+        <h1>Blue Pill?</h1>
+        
+        <span style="color: white; font-family: 'UnifrakturMaguntia', cursive; font-size: 24px; border-right: 2px solid white; animation: typing2 4s steps(44, end) forwards 2s, blink 1s infinite; white-space: nowrap; overflow: hidden; width: 0; display: block; margin: 20px auto;">
+          You got the spirit! Just believe in yourself
+        </span>
+        <style>
+          @keyframes typing1 { from { width: 0; } to { width: 100%; } }
+          @keyframes typing2 { from { width: 0; } to { width: 100%; } }
+          @keyframes blink { 0%, 50% { border-color: white; } 51%, 100% { border-color: transparent; } }
+        </style>
+    <h3>Now, wait for it to load ...</h3>
     <div class="section">
-        <h2>My Experiences</h2>
-        <ul>
-            <li>Software Developer at Tech Corp (2023-Present): Built web applications.</li>
-            <li>Intern at CodeWorks (2022): Assisted in backend development.</li>
-        </ul>
     </div>
     <div class="section">
-        <h2>My Education</h2>
+        <h2>My Projects </h2>
         <ul>
-            <li>B.S. in Computer Science, University of Example (2019-2023)</li>
-            <li>Online Course in Web Development, Coursera (2021)</li>
-        </ul>
-    </div>
-    <div class="section">
-        <h2>My Projects</h2>
-        <ul>
-            <li>Matrix Portfolio Website: Built a personal site with a Matrix theme.</li>
+            <li><a href="https://github.com/qafny/qafny_impl">Qafny</a>: Iowa State University research collaboration.</li>
             <li>Task Manager App: Developed a task management tool using JavaScript.</li>
+        </ul>
+    </div>
+    <div class="section">
+        <h2>My privious projects Experiences</h2>
+            
+        <ul>
+            <li>Emperical study on Hamlitonian Simulation and adiabatic quantum computation: Iowa State University</li>
+            <li><a href="https://github.com/JeffTheHouse/DAMN-Q">DAMN_Q</a>: A discrete-event, modular, lossy, and noisy quantum network simulator</li>
+            
+            <li>SneQ: Nokia Bell Labs' quantum network simulator</li>
         </ul>
     </div>
     <script>
@@ -44,11 +58,10 @@
         const context = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        const h = 'א‎ב‎ג‎ד‎ה‎ו‎ז‎ח‎ט‎י‎כ‎ך‎ל‎מ‎ם‎נ‎ן‎ס‎ע‎פ‎ף‎צ‎ץ‎ק‎ר‎ש‎ת';
         const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-        const latin = 'AEILNOPRSTY';
-        const nums = '911';
-        const alphabet = katakana + latin + nums + h;
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '123456789';
+        const alphabet = katakana + latin + nums;
         const fontSize = 10;
         const columns = canvas.width / fontSize;
         const rows = canvas.height / fontSize;
@@ -61,7 +74,7 @@
             rainDropsHorz[y] = Math.random() * canvas.width / fontSize;
         }
         const draw = () => {
-            context.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            context.fillStyle = 'rgba(0, 0, 0, 0.0005)';
             context.fillRect(0, 0, canvas.width, canvas.height);
             context.font = fontSize + 'px monospace';
             // Vertical rain
@@ -89,7 +102,7 @@
                 }
             }
         };
-        setInterval(draw, 30);
+        setInterval(draw, 13);
     </script>
 </body>
 </html>
