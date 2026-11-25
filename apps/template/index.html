@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Frontend Template | JeffTheHouse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;600;700&family=UnifrakturMaguntia&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../../assets/css/theme.css" />
+  <style>
+    .control-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .input-field {
+      flex: 1;
+      min-width: 220px;
+      background: #060c09;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--matrix-green);
+    }
+
+    .console-output {
+      background: #030604;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--matrix-green);
+      min-height: 180px;
+      max-height: 360px;
+      overflow: auto;
+      white-space: pre-wrap;
+      margin: 0;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #64748b;
+      margin-right: 0.4rem;
+    }
+
+    .status-dot.ok {
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .status-dot.err {
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="top-nav">
+      <div class="top-nav-inner">
+        <a href="../../index.html" class="brand">JeffTheHouse.github.io</a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="../../blue.html" class="nav-link blue-accent">Blue Pill</a>
+          <a href="../../red.html" class="nav-link red-accent">&larr; Back to Lab Hub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <h1 class="mono" style="margin-top: 0; color: var(--matrix-green);">
+        &gt; Project Frontend Starter
+      </h1>
+      <p class="muted" style="max-width: 720px;">
+        Duplicate <code class="mono">apps/template/</code> to create a new UI for any of your projects.
+        This page can send jobs to a local backend running on the client's PC (e.g. FastAPI, Flask, Rust, or Node on
+        <code class="mono">127.0.0.1</code>) or run logic directly in the browser.
+      </p>
+
+      <section class="panel" style="margin-top: 1.5rem;">
+        <h2 class="card-title mono" style="margin-bottom: 0.75rem;">1. Local PC Backend Connection</h2>
+        <div class="control-row">
+          <input
+            id="endpointInput"
+            type="url"
+            class="input-field"
+            value="http://127.0.0.1:8000/health"
+            aria-label="Local backend URL"
+          />
+          <button id="pingBtn" class="btn btn-outline" type="button">Test Connection</button>
+        </div>
+        <p class="mono muted" style="font-size: 0.85rem; margin: 0;">
+          <span id="statusDot" class="status-dot"></span>
+          <span id="statusText">Not tested yet</span>
+        </p>
+      </section>
+
+      <section class="panel" style="margin-top: 1.25rem;">
+        <h2 class="card-title mono" style="margin-bottom: 0.75rem;">2. Quick In-Browser Demo (Hamming Weight)</h2>
+        <div class="control-row">
+          <input
+            id="bitstringInput"
+            type="text"
+            class="input-field"
+            value="1011001011101"
+            placeholder="Enter a binary string (e.g. 101101)"
+            aria-label="Binary string input"
+          />
+          <button id="runLocalBtn" class="btn btn-red" type="button">Run in Browser</button>
+        </div>
+        <pre id="consoleOut" class="console-output">Ready. Click "Test Connection" or "Run in Browser".</pre>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    const endpointInput = document.getElementById('endpointInput');
+    const pingBtn = document.getElementById('pingBtn');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const bitstringInput = document.getElementById('bitstringInput');
+    const runLocalBtn = document.getElementById('runLocalBtn');
+    const consoleOut = document.getElementById('consoleOut');
+
+    const log = (msg) => {
+      const ts = new Date().toLocaleTimeString();
+      consoleOut.textContent += `\n[${ts}] ${msg}`;
+      consoleOut.scrollTop = consoleOut.scrollHeight;
+    };
+
+    pingBtn.addEventListener('click', async () => {
+      const url = endpointInput.value.trim();
+      if (!url) return;
+      statusDot.className = 'status-dot';
+      statusText.textContent = `Connecting to ${url}...`;
+      log(`GET ${url}`);
+
+      try {
+        const res = await fetch(url, { mode: 'cors' });
+        const text = await res.text();
+        statusDot.className = 'status-dot ok';
+        statusText.textContent = `Connected (HTTP ${res.status})`;
+        log(`Response (${res.status}): ${text.slice(0, 300)}`);
+      } catch (err) {
+        statusDot.className = 'status-dot err';
+        statusText.textContent = 'Connection failed (is your local server running with CORS enabled?)';
+        log(`Error: ${err.message}`);
+      }
+    });
+
+    runLocalBtn.addEventListener('click', () => {
+      const raw = bitstringInput.value.trim();
+      if (!/^[01]+$/.test(raw)) {
+        log('Invalid input: please enter only 0s and 1s.');
+        return;
+      }
+      const t0 = performance.now();
+      let weight = 0;
+      for (let i = 0; i < raw.length; i++) {
+        if (raw[i] === '1') weight++;
+      }
+      const elapsed = (performance.now() - t0).toFixed(3);
+      log(`In-browser Hamming weight("${raw}") = ${weight} / ${raw.length} bits (${elapsed} ms)`);
+    });
+  </script>
+</body>
+</html>

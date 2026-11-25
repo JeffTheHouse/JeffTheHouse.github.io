@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red Pill — Interactive Lab &amp; Project Frontends | JeffTheHouse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;600;700&family=UnifrakturMaguntia&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+  <style>
+    .red-hero {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .red-hero h1 {
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      color: #f87171;
+      text-shadow: 0 0 20px rgba(220, 38, 38, 0.55);
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .code-inline {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      background: rgba(0, 255, 65, 0.1);
+      border: 1px solid var(--border);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      color: var(--matrix-green);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="Matrix" aria-hidden="true"></canvas>
+
+  <div class="page-shell">
+    <header class="top-nav">
+      <div class="top-nav-inner">
+        <a href="index.html" class="brand">JeffTheHouse.github.io</a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="blue.html" class="nav-link blue-accent">Blue Pill (Portfolio)</a>
+          <a href="red.html" class="nav-link red-accent active">Red Pill (Lab Hub)</a>
+          <a
+            href="https://github.com/JeffTheHouse"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-link"
+          >
+            GitHub
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="red-hero">
+        <h1 class="display-title">Red Pill</h1>
+        <p class="mono" style="margin: 0.5rem 0 0; color: #fca5a5;">
+          Interactive Project Frontends &amp; Local-Compute UI Hub
+        </p>
+        <p class="muted" style="max-width: 680px; margin: 0.85rem auto 0;">
+          Each app under <span class="code-inline">apps/&lt;project&gt;/</span> is a standalone static frontend hosted on
+          GitHub Pages that can either run directly in your browser or connect to a local process running on your PC.
+        </p>
+      </section>
+
+      <div class="mode-grid">
+        <div class="panel">
+          <h3 class="card-title mono" style="color: #fca5a5; margin-bottom: 0.4rem;">
+            1. Local PC Compute Mode
+          </h3>
+          <p class="card-desc">
+            Run heavy simulations or native code locally (e.g., <span class="code-inline">http://127.0.0.1:8000</span>
+            with CORS enabled) while using this site as your control panel and visualizer.
+          </p>
+        </div>
+        <div class="panel">
+          <h3 class="card-title mono" style="color: var(--matrix-green); margin-bottom: 0.4rem;">
+            2. In-Browser Compute Mode
+          </h3>
+          <p class="card-desc">
+            Run lightweight tools directly in the client browser using JavaScript, WebAssembly, or Pyodide with zero
+            local installation required.
+          </p>
+        </div>
+      </div>
+
+      <h2 class="section-heading">Available &amp; Planned Frontends</h2>
+      <div class="card-grid">
+        <article class="card">
+          <h3 class="card-title">Project Frontend Starter</h3>
+          <p class="card-desc">
+            Working starter template with a configurable <span class="code-inline">localhost</span> API connector,
+            connection status indicator, and an in-browser fallback runner. Copy <span class="code-inline">apps/template/</span>
+            to add a new project UI.
+          </p>
+          <div class="card-footer">
+            <div class="badge-row">
+              <span class="badge">Live</span>
+              <span class="badge badge-red">Local PC / Browser</span>
+            </div>
+            <a href="apps/template/index.html" class="card-link">Launch &rarr;</a>
+          </div>
+        </article>
+
+        <article class="card" style="opacity: 0.82;">
+          <h3 class="card-title">DAMN-Q Network Frontend</h3>
+          <p class="card-desc">
+            Planned web UI for configuring topologies, noise models, and visualizing discrete-event quantum network
+            simulation results from a local DAMN-Q runner.
+          </p>
+          <div class="card-footer">
+            <div class="badge-row">
+              <span class="badge badge-blue">Planned</span>
+              <span class="badge badge-red">Local PC Backend</span>
+            </div>
+            <a
+              href="https://github.com/JeffTheHouse/DAMN-Q"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card-link"
+            >
+              Repo &rarr;
+            </a>
+          </div>
+        </article>
+
+        <article class="card" style="opacity: 0.82;">
+          <h3 class="card-title">QECC Hamming Weight Lab</h3>
+          <p class="card-desc">
+            Planned interactive frontend for running Hamming weight calculations and inspecting performance benchmarks.
+          </p>
+          <div class="card-footer">
+            <div class="badge-row">
+              <span class="badge badge-blue">Planned</span>
+              <span class="badge">In-Browser / Local</span>
+            </div>
+            <a
+              href="https://github.com/JeffTheHouse/QECC_Hamming_Weight"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card-link"
+            >
+              Repo &rarr;
+            </a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      &copy; JeffTheHouse &middot;
+      <a href="blue.html">Blue Pill (Portfolio)</a>
+      &middot;
+      <a href="https://github.com/JeffTheHouse" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initMatrixRain } from './assets/js/matrix.js';
+    initMatrixRain('Matrix', { color: '#ef4444', fontSize: 13, intervalMs: 42, opacity: 0.25 });
+  </script>
+</body>
+</html>
