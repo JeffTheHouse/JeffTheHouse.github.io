@@ -19,7 +19,7 @@ MAX_BODY_BYTES = 5 * 1024 * 1024
 if FS_ROOT not in sys.path:
     sys.path.insert(0, FS_ROOT)
 
-from damn_q.manifest import COMPONENT_MANIFEST, MANIFEST_VERSION  # noqa: E402
+from damn_q.manifest import CHANNEL_MANIFEST, COMPONENT_MANIFEST, MANIFEST_VERSION  # noqa: E402
 from damn_q.runner import SIMULATOR_VERSION, load_experiment, run_experiment  # noqa: E402
 from damn_q.schema import (  # noqa: E402
     ExperimentValidationError,
@@ -66,6 +66,7 @@ def handle(method, path, body_text):
                     "manifest_version": MANIFEST_VERSION,
                     "simulator_version": SIMULATOR_VERSION,
                     "components": COMPONENT_MANIFEST,
+                    "channels": CHANNEL_MANIFEST,
                 },
             )
 
