@@ -44,17 +44,19 @@ class Quantum_memory:
         self.depolarization_p = depolarization_p
         self.fifo = fifo
         self.sim = sim if sim is not None else scheduler
-        self.ch_in_q = Handler(self.handle_receive, sim=self.sim)
-        self.ch_in_c = Handler(self.handle_classic, sim=self.sim)
-        self.ch_in_paired_memory = Handler(self.handle_paired_memory, sim=self.sim)
-        self.ch_out_c = Emitter(sim=self.sim)
-        self.ch_out_q = Emitter(sim=self.sim)
-        self.ch_out_paired_memory = Emitter(sim=self.sim)
+        self.ch_in_q = Handler(self.handle_receive, sim=self.sim, kind="quantum", max_connections=1)
+        self.ch_in_c = Handler(self.handle_classic, sim=self.sim, kind="classical", max_connections=1)
+        self.ch_in_paired_memory = Handler(self.handle_paired_memory, sim=self.sim, kind="classical", max_connections=1)
+        self.ch_out_c = Emitter(sim=self.sim, kind="classical")
+        self.ch_out_q = Emitter(sim=self.sim, kind="quantum", max_connections=1)
+        self.ch_out_paired_memory = Emitter(sim=self.sim, kind="classical", max_connections=1)
         self.memory_address_generator = Id_generator()
         self.capacity = capacity
         self.memory = {}
         self.temperory_memory = {}
         self.paired_memory_message = None
+        self.heralded_count = 0
+        self.evicted_count = 0
         self._pending_order = deque()
         self._confirmed_order = deque()
 
@@ -84,10 +86,12 @@ class Quantum_memory:
             # (absent from `self.memory`) so stale release requests are no-ops.
             _, evicted_qubit = self.memory.pop(oldest_confirmed)
             evicted_qubit.state = None
+            self.evicted_count += 1
         elif oldest_pending is not None:
             _, evicted_qubit = self.temperory_memory.pop(oldest_pending)
             evicted_qubit.state = None
             self._pending_order[oldest_pending_idx] = None
+            self.evicted_count += 1
 
     def handle_paired_memory(self, message):
         if not self._pending_order:
@@ -101,7 +105,8 @@ class Quantum_memory:
         if message == 1:
             self.memory[slot_id] = (arrival_time, qubit)
             self._confirmed_order.append(slot_id)
-            self.sim.add(0, lambda s=slot_id: self.ch_out_c.emit(Ready(s)))
+            self.heralded_count += 1
+            self.sim.add(0, lambda s=slot_id: self.ch_out_c.emit(Ready(s, memory_id=self.id)))
         else:
             qubit.state = None
 
@@ -126,6 +131,9 @@ class Quantum_memory:
 
     def handle_classic(self, request):
         if isinstance(request, Release):
+            if request.memory_id is not None and request.memory_id != self.id:
+                # Release is addressed to a different memory -> ignore
+                return
             slot_id = request.slot_id
             if slot_id not in self.memory:
                 # Evicted or already released: consume tombstone if present and return

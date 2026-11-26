@@ -3,14 +3,14 @@ from collections import deque
 from Emitter import*
 from Measurment_module import*
 from Id_generator import*
-from Signals import enqueue_ready, release_request
+from Signals import MeasurementResult, enqueue_ready, release_request
 import numpy as np
 import random
 
 class Measurement_output:
     def __init__(self, id, measrument_result, es_result):
         self.id = id
-        self.measurment_result = measrument_result
+        self.measrument_result = measrument_result
         self.es_result = es_result
 
 class Measurer_memory_paired:
@@ -26,11 +26,11 @@ class Measurer_memory_paired:
         self.p_depolarization= p_depolarization
         self.x_basis_p = x_basis_p
         self.sim = sim if sim is not None else scheduler
-        self.ch_in_q = Handler(self.handle_qubit, sim=self.sim)
-        self.ch_in_es = Handler(self.handle_es, sim=self.sim)
-        self.ch_in_memory_c = Handler(self.handle_memory_c, sim=self.sim)
-        self.ch_out_memory_c = Emitter(sim=self.sim)
-        self.ch_out_result = Emitter(sim=self.sim)
+        self.ch_in_q = Handler(self.handle_qubit, sim=self.sim, kind="quantum", max_connections=1)
+        self.ch_in_es = Handler(self.handle_es, sim=self.sim, kind="classical", max_connections=1)
+        self.ch_in_memory_c = Handler(self.handle_memory_c, sim=self.sim, kind="classical", max_connections=1)
+        self.ch_out_memory_c = Emitter(sim=self.sim, kind="classical", max_connections=1)
+        self.ch_out_result = Emitter(sim=self.sim, kind="classical")
         self.id_generator_measurement = Id_generator()
         self._ready_slots = deque()
         self._pending_es = deque()
@@ -57,4 +57,10 @@ class Measurer_memory_paired:
     def handle_qubit(self, qubit):
         measurment_id = self.id_generator_measurement.generate()
         result = measure(measurment_id, qubit, self.x_basis_p, rng=self.sim.rng)
-        self.sim.add(self.delay, lambda: self.ch_out_result.emit(result.result))
+        out = MeasurementResult(
+            result.result,
+            pair_id=getattr(qubit, "pair_id", None),
+            basis=result.m_axis,
+            measurement_id=measurment_id,
+        )
+        self.sim.add(self.delay, lambda m=out: self.ch_out_result.emit(m))
