@@ -1,0 +1,60 @@
+from collections import deque
+
+from Emitter import*
+from Measurment_module import*
+from Id_generator import*
+from Signals import enqueue_ready, release_request
+import numpy as np
+import random
+
+class Measurement_output:
+    def __init__(self, id, measrument_result, es_result):
+        self.id = id
+        self.measurment_result = measrument_result
+        self.es_result = es_result
+
+class Measurer_memory_paired:
+    """Measures memory qubits; each ES message claims one ready memory slot.
+
+    ES messages wait until a readiness-announced slot exists, so the release
+    is always tagged with that slot. Nothing is dropped.
+    """
+
+    def __init__(self, id, delay, x_basis_p = 0, p_depolarization = 0, sim=None):
+        self.id = id
+        self.delay = delay
+        self.p_depolarization= p_depolarization
+        self.x_basis_p = x_basis_p
+        self.sim = sim if sim is not None else scheduler
+        self.ch_in_q = Handler(self.handle_qubit, sim=self.sim)
+        self.ch_in_es = Handler(self.handle_es, sim=self.sim)
+        self.ch_in_memory_c = Handler(self.handle_memory_c, sim=self.sim)
+        self.ch_out_memory_c = Emitter(sim=self.sim)
+        self.ch_out_result = Emitter(sim=self.sim)
+        self.id_generator_measurement = Id_generator()
+        self._ready_slots = deque()
+        self._pending_es = deque()
+        self.es_message = None
+
+    @property
+    def memory_qubit_counter(self):
+        return len(self._ready_slots)
+
+    def handle_memory_c(self, message):
+        enqueue_ready(self._ready_slots, message)
+        self._dispatch()
+
+    def handle_es(self, message):
+        self._pending_es.append(message)
+        self._dispatch()
+
+    def _dispatch(self):
+        while self._ready_slots and self._pending_es:
+            self.es_message = self._pending_es.popleft()
+            request = release_request(self._ready_slots.popleft())
+            self.sim.add(0, lambda r=request: self.ch_out_memory_c.emit(r))
+
+    def handle_qubit(self, qubit):
+        measurment_id = self.id_generator_measurement.generate()
+        result = measure(measurment_id, qubit, self.x_basis_p, rng=self.sim.rng)
+        self.sim.add(self.delay, lambda: self.ch_out_result.emit(result.result))
