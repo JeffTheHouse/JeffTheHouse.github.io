@@ -127,8 +127,43 @@
     </aside>
   </main>
 
-  <!-- Must load before app.js: installs the in-browser /api/ shim (Pyodide). -->
-  <script src="bridge.js"></script>
+  <!-- Must load before app.js: installs the non-blocking Web Worker /api/ shim (Pyodide). -->
+  <script>
+    window.DAMNQ_PYODIDE_CONFIG = {
+      workerUrl: "./pyodide_worker.js",
+      bundleUrl: "./damn_q_bundle.json",
+      examplesBaseUrl: "./experiments/",
+      examplesIndex: [
+        {
+          filename: "repeater_ideal.json",
+          name: "Three-Node Repeater (Ideal)",
+          description: "Ideal three-node quantum repeater with four quantum memories, Bell-basis entanglement swapping, and Pauli correction."
+        },
+        {
+          filename: "repeater_noisy_memory.json",
+          name: "Three-Node Repeater (Noisy Memories)",
+          description: "Three-node repeater with asymmetric per-tick storage depolarization (0.01, 0.02, 0.015, 0.025) matching analytic fidelity 0.5701501371."
+        },
+        {
+          filename: "repeater_tutorial_z.json",
+          name: "Tutorial Three-Node Repeater (Z-Basis Counts)",
+          description: "JSON representation of Test_entanglement_swapping.py / Tutorial.ipynb."
+        }
+      ]
+    };
+    (function () {
+      const overlay = document.getElementById("runtime-overlay");
+      const text = document.getElementById("runtime-overlay-text");
+      if (text) text.textContent = "Starting DAMN-Q Web Worker (Pyodide + NumPy)...";
+      const timer = setInterval(() => {
+        if (window.__DAMN_Q_APP__) {
+          clearInterval(timer);
+          if (overlay) overlay.hidden = true;
+        }
+      }, 150);
+    })();
+  </script>
+  <script src="pyodide_bridge.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
