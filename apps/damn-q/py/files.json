@@ -15,6 +15,7 @@
         "Measurment_module.py",
         "Memory.py",
         "Operators.py",
+        "Optical_bsm.py",
         "Orchestrator.py",
         "Pauli_corrector.py",
         "Qubits.py",
@@ -30,6 +31,8 @@
         "damn_q/schema.py"
     ],
     "experiments": [
+        "field_delft_eindhoven.json",
+        "field_hefei_swap.json",
         "repeater_ideal.json",
         "repeater_noisy_memory.json",
         "repeater_tutorial_hardware.json",
