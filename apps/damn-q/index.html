@@ -154,11 +154,74 @@
     (function () {
       const overlay = document.getElementById("runtime-overlay");
       const text = document.getElementById("runtime-overlay-text");
+      const badge = document.getElementById("version-badge");
+      const statusPill = document.getElementById("status-pill");
+      const resultsBody = document.getElementById("results-body");
+      let settled = false;
+
       if (text) text.textContent = "Starting DAMN-Q Web Worker (Pyodide + NumPy)...";
+      if (badge) badge.textContent = "loading…";
+
+      function showFailure(msg) {
+        if (settled) return;
+        settled = true;
+        clearInterval(timer);
+        if (badge) badge.textContent = "error";
+        if (!overlay || !text) return;
+        overlay.classList.add("error");
+        overlay.hidden = false;
+        text.textContent = msg || "Failed to start DAMN-Q simulator.";
+        if (!document.getElementById("runtime-retry-actions")) {
+          const actions = document.createElement("div");
+          actions.id = "runtime-retry-actions";
+          actions.style.marginTop = "1rem";
+          actions.style.display = "flex";
+          actions.style.gap = "0.75rem";
+          actions.style.justifyContent = "center";
+
+          const reloadBtn = document.createElement("button");
+          reloadBtn.type = "button";
+          reloadBtn.className = "btn btn-primary";
+          reloadBtn.textContent = "Reload";
+          reloadBtn.addEventListener("click", () => window.location.reload());
+
+          const dismissBtn = document.createElement("button");
+          dismissBtn.type = "button";
+          dismissBtn.className = "btn";
+          dismissBtn.textContent = "Dismiss";
+          dismissBtn.addEventListener("click", () => { overlay.hidden = true; });
+
+          actions.appendChild(reloadBtn);
+          actions.appendChild(dismissBtn);
+          text.parentElement.appendChild(actions);
+        }
+      }
+
+      window.addEventListener("error", (ev) => {
+        if (!settled) showFailure(`Simulator startup error: ${ev.message || "Unknown error"}`);
+      });
+      window.addEventListener("unhandledrejection", (ev) => {
+        if (!settled) {
+          const reason = ev.reason && ev.reason.message ? ev.reason.message : String(ev.reason || "Unknown error");
+          showFailure(`Simulator startup failed: ${reason}`);
+        }
+      });
+
+      const startedAt = Date.now();
       const timer = setInterval(() => {
         if (window.__DAMN_Q_APP__) {
+          settled = true;
           clearInterval(timer);
           if (overlay) overlay.hidden = true;
+          return;
+        }
+        if (statusPill && statusPill.classList.contains("err")) {
+          const detail = resultsBody ? resultsBody.innerText.trim() : "";
+          showFailure(detail || "Failed to initialize DAMN-Q workbench.");
+          return;
+        }
+        if (Date.now() - startedAt > 60000) {
+          showFailure("Timed out while loading Pyodide/NumPy. Check your connection and reload.");
         }
       }, 150);
     })();
