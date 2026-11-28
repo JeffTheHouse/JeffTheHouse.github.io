@@ -6,6 +6,7 @@
         "Detector_module.py",
         "Emitter.py",
         "Entanglment_swapping_module.py",
+        "Hardware_models.py",
         "Id_generator.py",
         "Link.py",
         "Loss_calculator.py",
@@ -31,6 +32,7 @@
     "experiments": [
         "repeater_ideal.json",
         "repeater_noisy_memory.json",
+        "repeater_tutorial_hardware.json",
         "repeater_tutorial_z.json"
     ]
 }
